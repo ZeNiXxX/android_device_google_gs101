@@ -200,6 +200,7 @@ DEVICE_MATRIX_FILE := \
 	device/google/gs101/compatibility_matrix.xml
 
 DEVICE_PACKAGE_OVERLAYS += device/google/gs101/overlay
+DEVICE_PACKAGE_OVERLAYS += device/google/gs101/overlay-lineage
 
 # This device is shipped with 31 (Android S)
 PRODUCT_SHIPPING_API_LEVEL := 31
