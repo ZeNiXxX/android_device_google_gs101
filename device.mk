@@ -1061,6 +1061,9 @@ PRODUCT_PACKAGES += \
 	update_engine_sideload \
 	update_verifier
 
+PRODUCT_PACKAGES += \
+        GoogleParts
+
 # tetheroffload HAL
 PRODUCT_PACKAGES += \
 	vendor.samsung_slsi.hardware.tetheroffload@1.1-service
