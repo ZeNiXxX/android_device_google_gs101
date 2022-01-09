@@ -52,11 +52,22 @@ LOCAL_KERNEL := $(TARGET_KERNEL_DIR)/Image.lz4
 
 # OEM Unlock reporting
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-	ro.oem_unlock_supported=1 \
-        ro.control_privapp_permissions=log
+	ro.oem_unlock_supported=1
 
 ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
 #Set IKE logs to verbose for WFC
+PRODUCT_PROPERTY_OVERRIDES += log.tag.IKE=VERBOSE
+
+#Set Shannon IMS logs to debug
+PRODUCT_PROPERTY_OVERRIDES += log.tag.SHANNON_IMS=DEBUG
+
+#Set Shannon QNS logs to debug
+PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS=DEBUG
+PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-ims=DEBUG
+PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-emergency=DEBUG
+PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-mms=DEBUG
+PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-xcap=DEBUG
+PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-HC=DEBUG
 
 # Modem userdebug
 include device/google/gs101/modem/userdebug.mk
@@ -64,15 +75,15 @@ endif
 
 include device/google/gs101/modem/user.mk
 
-#ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
 # b/36703476: Set default log size to 1M
-#PRODUCT_PROPERTY_OVERRIDES += \
-#	ro.logd.size=1M
+PRODUCT_PROPERTY_OVERRIDES += \
+	ro.logd.size=1M
 # b/114766334: persist all logs by default rotating on 30 files of 1MiB
-#PRODUCT_PROPERTY_OVERRIDES += \
-#	logd.logpersistd=logcatd \
-#	logd.logpersistd.size=30
-#endif
+PRODUCT_PROPERTY_OVERRIDES += \
+	logd.logpersistd=logcatd \
+	logd.logpersistd.size=30
+endif
 
 # From system.property
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -200,7 +211,6 @@ DEVICE_MATRIX_FILE := \
 	device/google/gs101/compatibility_matrix.xml
 
 DEVICE_PACKAGE_OVERLAYS += device/google/gs101/overlay
-DEVICE_PACKAGE_OVERLAYS += device/google/gs101/overlay-lineage
 
 # This device is shipped with 31 (Android S)
 PRODUCT_SHIPPING_API_LEVEL := 31
@@ -293,13 +303,13 @@ PRODUCT_PACKAGES += \
 	checkpoint_gc
 
 # Vendor verbose logging default property
-#ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-#PRODUCT_PROPERTY_OVERRIDES += \
-#	persist.vendor.verbose_logging_enabled=true
-#else
-#PRODUCT_PROPERTY_OVERRIDES += \
-#	persist.vendor.verbose_logging_enabled=false
-#endif
+ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+PRODUCT_PROPERTY_OVERRIDES += \
+	persist.vendor.verbose_logging_enabled=true
+else
+PRODUCT_PROPERTY_OVERRIDES += \
+	persist.vendor.verbose_logging_enabled=false
+endif
 
 # CP Logging properties
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -311,7 +321,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	persist.vendor.sys.modem.logging.enable=true
 
 # Enable silent CP crash handling
-ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PROPERTY_OVERRIDES += \
 	persist.vendor.ril.crash_handling_mode=1
 else
@@ -364,7 +374,7 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml
 
 # default usb debug functions
-ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
 PRODUCT_PROPERTY_OVERRIDES += \
 	persist.vendor.usb.usbradio.config=dm
 endif
@@ -569,7 +579,12 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
 	frameworks/native/data/etc/android.hardware.camera.concurrent.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.concurrent.xml \
 	frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml\
-	frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml\
+	frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml
+
+ifneq ($(wildcard vendor/google/services/LyricCameraHAL/src),)
+PRODUCT_COPY_FILES += \
+	vendor/google/services/LyricCameraHAL/src/vendor.android.hardware.camera.preview-dis.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/vendor.android.hardware.camera.preview-dis.xml
+endif
 
 #PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
@@ -620,6 +635,7 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.surface_flinger.set_display_power_timer
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.surface_flinger.use_content_detection_for_refresh_rate=true
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.surface_flinger.max_frame_buffer_acquired_buffers=3
 
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.surface_flinger.supports_background_blur=1
 PRODUCT_SYSTEM_PROPERTIES += ro.launcher.blur.appLaunch=0
 
 # Must align with HAL types Dataspace
@@ -824,10 +840,10 @@ PRODUCT_PACKAGES += \
 	Iwlan
 
 #Iwlan test app for userdebug/eng builds
-#ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-#PRODUCT_PACKAGES += \
-#	IwlanTestApp
-#endif
+ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+PRODUCT_PACKAGES += \
+	IwlanTestApp
+endif
 
 PRODUCT_PACKAGES += \
 	whitelist \
@@ -1061,9 +1077,6 @@ PRODUCT_PACKAGES += \
 	update_engine_sideload \
 	update_verifier
 
-PRODUCT_PACKAGES += \
-        GoogleParts
-
 # tetheroffload HAL
 PRODUCT_PACKAGES += \
 	vendor.samsung_slsi.hardware.tetheroffload@1.1-service
@@ -1116,7 +1129,7 @@ DEVICE_PRODUCT_COMPATIBILITY_MATRIX_FILE := device/google/gs101/device_framework
 
 # Preopt SystemUI
 PRODUCT_DEXPREOPT_SPEED_APPS += \
-    SystemUIGoogle
+    SystemUI
 
 # Keymaster configuration
 PRODUCT_COPY_FILES += \

@@ -46,6 +46,7 @@ TARGET_2ND_CPU_VARIANT := generic
 TARGET_2ND_CPU_VARIANT_RUNTIME := cortex-a53
 endif
 
+BOARD_KERNEL_CMDLINE += dyndbg=\"func alloc_contig_dump_pages +p\"
 BOARD_KERNEL_CMDLINE += earlycon=exynos4210,0x10A00000 console=ttySAC0,115200 androidboot.console=ttySAC0 printk.devkmsg=on
 BOARD_KERNEL_CMDLINE += cma_sysfs.experimental=Y
 BOARD_KERNEL_CMDLINE += stack_depot_disable=off page_pinner=on
@@ -161,6 +162,8 @@ BOARD_AVB_BOOT_ROLLBACK_INDEX_LOCATION := 2
 
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 11796480000
+BOARD_USERDATAIMAGE_FILE_SYSTEM_TYPE := f2fs
 PRODUCT_FS_COMPRESSION := 1
 BOARD_FLASH_BLOCK_SIZE := 4096
 BOARD_MOUNT_SDCARD_RW := true
@@ -353,7 +356,13 @@ WIFI_AVOID_IFACE_RESET_MAC_CHANGE := true
 WIFI_FEATURE_HOSTAPD_11AX := true
 
 # NeuralNetworks
+GPU_SOURCE_PRESENT := $(wildcard vendor/arm/mali/valhall)
+GPU_PREBUILD_PRESENT := $(wildcard vendor/google/$(TARGET_DEVICE)/proprietary)
+ifneq "$(or $(GPU_SOURCE_PRESENT),$(GPU_PREBUILD_PRESENT))" ""
 ARMNN_COMPUTE_CL_ENABLE := 1
+else
+ARMNN_COMPUTE_CL_ENABLE := 0
+endif
 ARMNN_COMPUTE_NEON_ENABLE := 1
 
 # Boot.img
@@ -408,5 +417,6 @@ BOARD_KERNEL_CMDLINE += at24.write_timeout=100
 # Enable larger logbuf
 BOARD_KERNEL_CMDLINE += log_buf_len=1024K
 
--include device/google/gs101/BoardConfigLineage.mk
 -include vendor/google_devices/gs101/proprietary/BoardConfigVendor.mk
+
+include device/google/gs101/BoardConfigLineage.mk
