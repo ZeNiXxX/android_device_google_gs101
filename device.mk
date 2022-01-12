@@ -374,10 +374,10 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml
 
 # default usb debug functions
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.vendor.usb.usbradio.config=dm
-endif
+#ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
+#PRODUCT_PROPERTY_OVERRIDES += \
+#	persist.vendor.usb.usbradio.config=dm
+#endif
 
 # Power HAL
 PRODUCT_COPY_FILES += \
