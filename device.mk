@@ -54,36 +54,11 @@ LOCAL_KERNEL := $(TARGET_KERNEL_DIR)/Image.lz4
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 	ro.oem_unlock_supported=1
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-#Set IKE logs to verbose for WFC
-PRODUCT_PROPERTY_OVERRIDES += log.tag.IKE=VERBOSE
 
-#Set Shannon IMS logs to debug
-PRODUCT_PROPERTY_OVERRIDES += log.tag.SHANNON_IMS=DEBUG
-
-#Set Shannon QNS logs to debug
-PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS=DEBUG
-PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-ims=DEBUG
-PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-emergency=DEBUG
-PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-mms=DEBUG
-PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-xcap=DEBUG
-PRODUCT_PROPERTY_OVERRIDES += log.tag.ShannonQNS-HC=DEBUG
-
-# Modem userdebug
-include device/google/gs101/modem/userdebug.mk
-endif
 
 include device/google/gs101/modem/user.mk
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-# b/36703476: Set default log size to 1M
-PRODUCT_PROPERTY_OVERRIDES += \
-	ro.logd.size=1M
-# b/114766334: persist all logs by default rotating on 30 files of 1MiB
-PRODUCT_PROPERTY_OVERRIDES += \
-	logd.logpersistd=logcatd \
-	logd.logpersistd.size=30
-endif
+
 
 # From system.property
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -228,11 +203,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
 	device/google/gs101/conf/init.gs101.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/hw/init.gs101.rc
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_COPY_FILES += \
-	device/google/gs101/conf/init.debug.rc:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.debug.rc
-endif
-
 # If AoC Daemon is not present on this build, load firmware at boot via rc
 ifeq ($(wildcard vendor/google/whitechapel/aoc/aocd),)
 PRODUCT_COPY_FILES += \
@@ -276,12 +246,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
 	android.hardware.contexthub@1.2-service.generic
 
-# CHRE tools
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PACKAGES += \
-	chre_power_test_client \
-	chre_test_client
-endif
 
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.context_hub.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.context_hub.xml
@@ -302,15 +266,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
 	checkpoint_gc
 
-# Vendor verbose logging default property
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.vendor.verbose_logging_enabled=true
-else
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.vendor.verbose_logging_enabled=false
-endif
-
 # CP Logging properties
 PRODUCT_PROPERTY_OVERRIDES += \
 	ro.vendor.sys.modem.logging.loc = /data/vendor/slog \
@@ -319,15 +274,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 	ro.vendor.cbd.modem_type = "s5100sit" \
 	persist.vendor.sys.modem.logging.br_num=5 \
 	persist.vendor.sys.modem.logging.enable=true
-
-# Enable silent CP crash handling
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.vendor.ril.crash_handling_mode=1
-else
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.vendor.ril.crash_handling_mode=2
-endif
 
 # Add support dual SIM mode
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -359,12 +305,6 @@ PRODUCT_COPY_FILES += \
 # Add sensor HAL 2.1 product packages
 PRODUCT_PACKAGES += android.hardware.sensors@2.1-service.multihal
 
-# Debug property for sensor.
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PROPERTY_OVERRIDES += \
-	vendor.debug.sensor.hal.event_logger=true
-endif
-
 # USB HAL
 PRODUCT_PACKAGES += \
 	android.hardware.usb@1.3-service.gs101
@@ -373,11 +313,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.software.midi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.midi.xml
 
-# default usb debug functions
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PROPERTY_OVERRIDES += \
-	persist.vendor.usb.usbradio.config=dm
-endif
+
 
 # Power HAL
 PRODUCT_COPY_FILES += \
@@ -610,10 +546,6 @@ PRODUCT_PACKAGES += \
 	libdisplaycolor \
 	hwcomposer.$(TARGET_BOARD_PLATFORM)
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PACKAGES += displaycolor_service
-endif
-
 PRODUCT_PROPERTY_OVERRIDES += \
 	debug.sf.disable_backpressure=0 \
 	debug.sf.enable_gl_backpressure=1
@@ -688,10 +620,6 @@ PRODUCT_PACKAGES += wpa_supplicant.conf
 
 WIFI_PRIV_CMD_UPDATE_MBO_CELL_STATUS := enabled
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PACKAGES += wpa_cli
-PRODUCT_PACKAGES += hostapd_cli
-endif
 
 ####################################
 ## VIDEO
@@ -799,15 +727,7 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml
 
 # System props to enable Bluetooth Quality Report (BQR) feature
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PRODUCT_PROPERTIES += \
-	persist.bluetooth.bqr.event_mask=262174 \
-	persist.bluetooth.bqr.min_interval_ms=500
-else
-PRODUCT_PRODUCT_PROPERTIES += \
-	persist.bluetooth.bqr.event_mask=30 \
-	persist.bluetooth.bqr.min_interval_ms=500
-endif
+
 
 #VNDK
 PRODUCT_PACKAGES += \
@@ -838,12 +758,6 @@ PRODUCT_PACKAGES += \
 #google iwlan
 PRODUCT_PACKAGES += \
 	Iwlan
-
-#Iwlan test app for userdebug/eng builds
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PACKAGES += \
-	IwlanTestApp
-endif
 
 PRODUCT_PACKAGES += \
 	whitelist \
@@ -1034,21 +948,7 @@ endif
 PRODUCT_PACKAGES += vndservicemanager
 PRODUCT_PACKAGES += vndservice
 
-# TinyTools, debug tool and cs35l41 speaker calibration tool for Audio
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-PRODUCT_PACKAGES += \
-	tinyplay \
-	tinycap \
-	tinymix \
-	tinypcminfo \
-	tinyhostless \
-	cplay \
-	aoc_hal \
-	aoc_tuning_inft \
-	crus_sp_cal \
-	mahal_test \
-	ma_aoc_tuning_test
-endif
+
 
 PRODUCT_PACKAGES += \
 	google.hardware.media.c2@1.0-service \

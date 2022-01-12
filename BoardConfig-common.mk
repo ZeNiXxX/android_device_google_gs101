@@ -214,17 +214,6 @@ SOONG_CONFIG_aoc_audio_func += \
 
 SOONG_CONFIG_aoc_audio_func_ext_hidl := true
 
-ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
-SOONG_CONFIG_aoc_audio_func += \
-    dump_usecase_data \
-    hal_socket_control \
-    record_tunning_keys
-
-SOONG_CONFIG_aoc_audio_func_dump_usecase_data := true
-SOONG_CONFIG_aoc_audio_func_hal_socket_control := true
-SOONG_CONFIG_aoc_audio_func_record_tunning_keys := true
-endif
-
 ifneq (,$(filter aosp_%,$(TARGET_PRODUCT)))
 SOONG_CONFIG_aoc_audio_func += aosp_build
 
