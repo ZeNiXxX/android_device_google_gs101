@@ -216,7 +216,7 @@ DEVICE_PACKAGE_OVERLAYS += device/google/gs101/overlay
 PRODUCT_SHIPPING_API_LEVEL := 31
 
 # Enforce the Product interface
-PRODUCT_PRODUCT_VNDK_VERSION := current
+#PRODUCT_PRODUCT_VNDK_VERSION := current
 PRODUCT_ENFORCE_PRODUCT_PARTITION_INTERFACE := true
 
 # Init files
@@ -1136,3 +1136,5 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Call deleteAllKeys if vold detects a factory reset
 PRODUCT_VENDOR_PROPERTIES += ro.crypto.metadata_init_delete_all_keys.enabled=true
+
+SKIP_ABI_CHECKS := true
