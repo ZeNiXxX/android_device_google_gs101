@@ -18,6 +18,9 @@ BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_VENDOR_DLKMIMAGE_FILE_SYSTEM_TYPE := ext4
 TARGET_COPY_OUT_VENDOR_DLKM := vendor_dlkm
 
+# Manifests
+DEVICE_PRODUCT_COMPATIBILITY_MATRIX_FILE += device/google/gs101/lineage_compatibility_matrix.xml
+
 # Enable chain partition for vendor.
 BOARD_AVB_VBMETA_VENDOR := vendor
 BOARD_AVB_VBMETA_VENDOR_KEY_PATH := external/avb/test/data/testkey_rsa2048.pem
