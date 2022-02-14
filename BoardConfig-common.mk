@@ -419,4 +419,4 @@ BOARD_KERNEL_CMDLINE += log_buf_len=1024K
 
 -include vendor/google_devices/gs101/proprietary/BoardConfigVendor.mk
 
-include device/google/gs101/BoardConfig-calyx.mk
+include device/google/gs101/BoardConfig-lineage.mk
