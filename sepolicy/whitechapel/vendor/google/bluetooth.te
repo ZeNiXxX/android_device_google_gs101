@@ -1,3 +1,0 @@
-allow bluetooth sysfs_vendor_sched:dir search;
-allow bluetooth sysfs_vendor_sched:file w_file_perms;
-
