@@ -24,6 +24,12 @@ SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS += device/google/gs101/sepolicy/system_ext/priv
 # Battery
 BOARD_SEPOLICY_DIRS += hardware/google/pixel-sepolicy/googlebattery
 BOARD_SEPOLICY_DIRS += hardware/google/pixel-sepolicy/turbo_adapter
+
+# Input
+BOARD_SEPOLICY_DIRS += hardware/google/pixel-sepolicy/input
+
+# CrDroid additions end
+
 #   Dauntless (uses Citadel policy currently)
 BOARD_SEPOLICY_DIRS += hardware/google/pixel-sepolicy/citadel
 
