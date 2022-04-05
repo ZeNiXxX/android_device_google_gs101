@@ -24,7 +24,7 @@ user=_app seinfo=platform name=com.android.ramdump domain=ramdump_app type=app_d
 user=_app seinfo=platform isPrivApp=true name=com.google.android.grilservice domain=grilservice_app levelFrom=all
 
 # HbmSVManager
-user=_app isPrivApp=true seinfo=platform name=com.android.hbmsvmanager domain=hbmsvmanager_app type=app_data_file levelFrom=all
+user=_app seinfo=platform name=com.android.hbmsvmanager domain=hbmsvmanager_app type=app_data_file levelFrom=all
 
 # Hardware Info Collection
 user=_app isPrivApp=true name=com.google.android.hardwareinfo domain=hardware_info_app type=app_data_file levelFrom=user
