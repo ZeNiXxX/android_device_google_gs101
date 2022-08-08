@@ -383,8 +383,6 @@ BOARD_BUILD_VENDOR_RAMDISK_IMAGE := true
 
 BOARD_VENDOR_KERNEL_MODULES_BLOCKLIST_FILE := device/google/gs101/vendor_dlkm.blocklist
 
-BOARD_SEPOLICY_DIRS += hardware/google/pixel-sepolicy/turbo_adapter
-
 KERNEL_MODULE_DIR := $(TARGET_KERNEL_DIR)
 KERNEL_MODULES := $(wildcard $(KERNEL_MODULE_DIR)/*.ko)
 
